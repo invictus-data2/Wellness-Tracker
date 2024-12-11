@@ -18,4 +18,4 @@ class PostForm(forms.ModelForm):
             'date': forms.DateInput(attrs={'type': 'date'}),  # Custom date input widget
         }
         
-        # Comment
+    
