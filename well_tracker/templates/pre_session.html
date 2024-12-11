@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Pre-Session Metrics</title>
+    <style>
+        body {
+            background-color: rgb(131, 16, 16);
+            color: rgb(255, 255, 255);
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0; 
+        }
+        h1 {
+            text-align: center;
+            font-size: 40px;
+            margin-top: 50px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 2.0); /* Add shadow for better visibility */
+        }
+
+    
+        .form-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 90vh;
+            margin: 0;
+            width: 100%;
+        }
+    
+        form {
+            display: flex;
+            flex-direction: column;
+            font-size: 1.2em;
+            width: 100%;  /* Ensure form takes full width inside container */
+            max-width: 500px; /* Optional: limit the width of the form */
+        }
+    
+        .form-group {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+    
+        .form-group label {
+            width: 150px;            /* Fixed label width */
+            text-align: right;
+            margin-right: 20px;      /* Space between label and input */
+        }
+    
+        /* Consistent style for all inputs and select boxes */
+        .form-group input[type="text"],
+        .form-group input[type="number"],
+        .form-group input[type="date"],
+        .form-group select {
+            width: 100%;
+            height: 40px;            /* Consistent height for all input fields */
+            padding: 8px;
+            font-size: 1em;
+            border: none;
+            background-color: white;
+            color: black;
+            border-radius: 4px;
+            margin: 10px 0;          /* Consistent margin */
+            box-sizing: border-box;  /* Ensures padding doesn't affect width */
+        }
+    
+        .form-group span {
+            margin-left: 10px;       /* Space between slider and value */
+        }
+    
+        .button-container {
+            display: flex;
+            justify-content: center;
+            margin-top: 20px;
+        }
+    
+        button {
+        width: 200px;
+        height: 50px;
+        font-size: 1.2em;
+        border: none;
+        border-radius: 8px;
+        background-color: gold; /* Change background color to white */
+        color: rgb(1, 1, 1); /* Change text color to blue for contrast */
+        cursor: pointer;
+        transition: background-color 0.3s, color 0.3s; /* Smooth transition for hover effect */
+    }
+
+    button:hover {
+        background-color: rgb(3, 145, 27); /* Change background color on hover */
+        color: white; /* Change text color on hover */
+    }
+        /* Increase slider width */
+    .form-group input[type="range"] {
+        -webkit-appearance: none;
+        width: 100%;            /* Use full container width */
+        appearance: none;        /* Remove default browser styling */
+        height: 10px;            /* Increase slider height */
+        border-radius: 5px;      /* Rounded corners */
+        background: #ccc; /* Default gradient */
+        outline: none;           /* Remove focus outline */
+        transition: background 0.3s ease; /* Smooth color transition */
+    }
+
+    /* Remove default slider thumb styling and customize */
+    input[type="range"]::-webkit-slider-thumb {
+        -webkit-appearance: none;        /* Remove default thumb */
+        width: 20px;             /* Thumb width */
+        height: 20px;            /* Thumb height */
+        background: rgb(1, 1, 1);     /* Thumb color */
+        border-radius: 50%;      /* Make it circular */
+        cursor: pointer;         /* Change cursor on hover */
+    }
+
+        </style>
+    
+    <!-- Flatpickr CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+</head>
+<body>
+    <h1>Pre-Session Metrics</h1>
+    <div class="form-container">
+        <h2>Mandatory</h2>
+        <form method="post">
+            {% csrf_token %}
+            
+            <!-- Client Name Dropdown -->
+            <div class="form-group">
+                <label for="client_name">Client Name: <span style="color: white;">*</span></label>
+                <select id="client_name" name="client_name" class="form-control">                
+                    {% for name in client_names %}
+                         <option value="{{ name }}">{{ name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            
+            <!-- Coach Name Dropdown -->
+            <div class="form-group">
+                <label for="coach_name">Coach Name: <span style="color: white;">*</span></label>
+                <select id="coach_name" name="coach_name">
+                    {% for name in coach_names %}
+                         <option value="{{ name }}">{{ name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+    
+            <!-- Date Picker -->
+            <div class="form-group">
+                <label for="date">Select Date:<span style="color: white;">*</span></label>
+                <input type="date" id="date" name="date">
+            </div>
+    
+            <!-- Weight Input -->
+            <div class="form-group">
+                <label for="weight">Weight (kg):</label>
+                <input type="number" id="weight" name="weight" step="0.1" min="0" placeholder="Enter weight">
+            </div>
+    
+            <!-- Sleep Slider -->
+            <div class="form-group">
+                <label for="sleep">Sleep:<span style="color: white;">*</span></label>
+                <input type="range" id="sleep" name="sleep" min="1" max="5" step="1" value="3" oninput="updateSliderValue('sleep', 'sleepValue')">
+                <span id="sleepValue">3</span>
+            </div>
+    
+            <!-- Soreness Slider -->
+            <div class="form-group">
+                <label for="soreness">Soreness:<span style="color: white;">*</span></label>
+                <input type="range" id="soreness" name="soreness" min="1" max="5" step="1" value="3" oninput="updateSliderValue('soreness', 'sorenessValue')">
+                <span id="sorenessValue">3</span>
+            </div>
+    
+            <!-- Mental Stress Slider -->
+            <div class="form-group">
+                <label for="mental_stress">Mental Stress:<span style="color: white;">*</span></label>
+                <input type="range" id="mental_stress" name="mental_stress" min="1" max="5" step="1" value="3" oninput="updateSliderValue('mental_stress', 'mentalStressValue')">
+                <span id="mentalStressValue">3</span>
+            </div>
+    
+            <!-- Fatigue Slider -->
+            <div class="form-group">
+                <label for="fatigue">Fatigue:<span style="color: white;">*</span></label>
+                <input type="range" id="fatigue" name="fatigue" min="1" max="5" step="1" value="3" oninput="updateSliderValue('fatigue', 'fatigueValue')">
+                <span id="fatigueValue">3</span>
+            </div>
+    
+            <!-- Pain Scale Slider -->
+            <div class="form-group">
+                <label for="pain_scale">Pain Scale:<span style="color: white;">*</span></label>
+                <input type="range" id="pain_scale" name="pain_scale" min="1" max="5" step="1" value="3" oninput="updateSliderValue('pain_scale', 'painScaleValue')">
+                <span id="painScaleValue">5</span>
+            </div>
+    
+            <!-- Stiffness Slider -->
+            <div class="form-group">
+                <label for="stiffness">Stiffness:<span style="color: white;">*</span></label>
+                <input type="range" id="stiffness" name="stiffness" min="1" max="5" step="1" value="3" oninput="updateSliderValue('stiffness', 'stiffnessValue')">
+                <span id="stiffnessValue">3</span>
+            </div>
+    
+            <!-- Grip Strength Input -->
+            <div class="form-group">
+                <label for="grip_strength">Grip Strength (kg):</label>
+                <input type="number" id="grip_strength" name="grip_strength" step="0.1" min="0" placeholder="Enter grip strength">
+            </div>  
+
+            <!-- Resting Heart Rate Input -->
+            <div class="form-group">
+                <label for="rhr">Resting Heart Rate (bpm):</label>
+                <input type="number" id="rhr" name="rhr" step="0.1" min="0" placeholder="Enter resting heart rate">
+            </div>
+            
+            <!-- Sleep Quantity Input -->
+            <div class="form-group">
+                <label for="">Sleep Quantity (hours):</label>
+                <input type="number" id="sleep_quantity" name="sleep_quantity" step="0.1" min="0" placeholder="Enter how many hours you slept">
+            </div> 
+
+             <!-- Submit Button -->
+            <div class="button-container">
+                <button type="submit">Start Workout</button>
+            </div>
+
+        </form>
+    </div>
+    
+    
+    <!-- Flatpickr JavaScript -->
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+        <script>
+            // Apply Flatpickr to the date input
+            flatpickr("#date", {
+                dateFormat: "Y-m-d",  // You can adjust the format as needed
+            });
+            // Add the slider value update function here
+            function updateSliderValue(sliderId, outputId) {
+                const slider = document.getElementById(sliderId);
+                const output = document.getElementById(outputId);
+                
+                // Update displayed value
+                output.innerText = slider.value;
+                
+                // Calculate percentage for dynamic background
+                const percentage = ((slider.value - slider.min) / (slider.max - slider.min)) * 100;
+
+                // Set gradient background with dynamic color
+                slider.style.background = `linear-gradient(90deg, #FFA300 ${percentage}%, #ccc ${percentage}%)`;
+            }
+
+            // Initialize sliders on page load
+            document.addEventListener("DOMContentLoaded", function() {
+                const sliders = ['sleep', 'soreness', 'mental_stress', 'fatigue', 'pain_scale', 'stiffness'];
+                
+                sliders.forEach(sliderId => {
+                    const slider = document.getElementById(sliderId);
+                    const outputId = sliderId + 'Value';
+
+                    // Initialize each slider's background and value display
+                    updateSliderValue(sliderId, outputId);
+
+                    // Add event listener for real-time updates
+                    slider.addEventListener('input', () => updateSliderValue(sliderId, outputId));
+                });
+            });
+        </script>
+</body>
+</html>

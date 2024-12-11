@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Home - Wellness Tracker</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: rgb(131, 16, 16);
+            color: white;
+            text-align: center;
+            margin: 0;
+        }
+        .container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+        }
+        .welcome-title {
+            font-size: 2.5em;
+            margin-bottom: 40px;
+        }
+        .button-container {
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+        }
+        .button-container a {
+            text-decoration: none;
+        }
+        .pre-session-button, .post-session-button {
+            padding: 15px 30px;
+            font-size: 1.5em;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            background-color: gold;
+            color: rgb(131, 16, 16);
+            transition: background-color 0.3s, color 0.3s;
+        }
+        .pre-session-button:hover {
+            background-color: rgb(3, 145, 27);
+            color: white;
+        }
+        .post-session-button:hover {
+            background-color: rgb(3, 145, 27);
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 class="welcome-title">Welcome to Wellness Tracker</h1>
+        <div class="button-container">
+            <a href="{% url 'pre_session' %}">
+                <button class="pre-session-button">Pre-Session Metrics</button>
+            </a>
+            <a href="{% url 'post_session' %}">
+                <button class="post-session-button">Post-Session Metrics</button>
+            </a>
+        </div>
+    </div>
+</body>
+</html>
+
