@@ -1,0 +1,282 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Post-Session Metrics</title>
+    <style>
+        body {
+            background-color: rgb(86, 8, 90);
+            color: white;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+        h1 {
+            text-align: center;
+            font-size: 40px;
+            margin-top: 50px;
+            font-family:'Trebuchet M S', sans-serif;
+        }
+
+        .logo {
+            text-align: center;
+        }
+
+        .logo img {
+            max-height: 200px;
+            width: auto;
+        }
+        .video-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            z-index: -1;
+            filter: blur(10px) brightness(0.5);
+        }
+        .form-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 90vh;
+            margin: 0;
+            width: 100%;
+            font-family:'Trebuchet M S', sans-serif;
+        }
+    
+        form {
+            display: flex;
+            font-family:'Trebuchet M S', sans-serif;
+            flex-direction: column;
+            font-size: 1.2em;
+            width: 100%;  /* Ensure form takes full width inside container */
+            max-width: 80%; /* Optional: limit the width of the form */
+        }
+    
+        .form-group {
+            display: flex;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+    
+        .form-group label {
+            width: 150px;            /* Fixed label width */
+            text-align: left;
+            /*margin-right: 20px;      /* Space between label and input */
+        }
+    
+        /* Consistent style for all inputs and select boxes */
+        .form-group input[type="text"],
+        .form-group input[type="number"],
+        .form-group input[type="date"],
+        .form-group select {
+            width: 100%;
+            height: 40px;            /* Consistent height for all input fields */
+            padding: 8px;
+            font-family:'Trebuchet M S', sans-serif;
+            font-size: 1em;
+            border: none;
+            background-color: white;
+            color: black;
+            border-radius: 4px;
+            margin: 10px 0;          /* Consistent margin */
+            box-sizing: border-box;  /* Ensures padding doesn't affect width */
+        }
+    
+        .form-group span {
+            margin-left: 10px;       /* Space between slider and value */
+        }
+    
+        .button-container {
+            display: flex;
+            justify-content: center;
+            margin-top: 20px;
+        }
+    
+        button {
+        width: 200px;
+        height: 50px;
+        font-size: 1.2em;
+        border: none;
+        border-radius: 8px;
+        background-color: rgba(217, 183, 119); /* Change background color to white */
+        color: rgb(0,0,0); /* Change text color to blue for contrast */
+        cursor: pointer;
+        transition: background-color 0.3s, color 0.3s; /* Smooth transition for hover effect */
+    }
+
+    button:hover {
+        background-color: rgb(3, 145, 27); /* Change background color on hover */
+        color: white; /* Change text color on hover */
+    }
+        /* Increase slider width */
+    .form-group input[type="range"] {
+        -webkit-appearance: none;
+        width: 100%;            /* Use full container width */
+        appearance: none;        /* Remove default browser styling */
+        height: 10px;            /* Increase slider height */
+        border-radius: 5px;      /* Rounded corners */
+        font-family:'Trebuchet M S', sans-serif;
+        background: linear-gradient(to right, rgb(96, 38, 162), rgb(255, 0, 0)); 
+        outline: none;           /* Remove focus outline */
+        transition: background 0.3s ease; /* Smooth color transition */
+    }
+
+    /* Remove default slider thumb styling and customize */
+    input[type="range"]::-webkit-slider-thumb {
+        -webkit-appearance: none;        /* Remove default thumb */
+        width: 20px;             /* Thumb width */
+        height: 20px;            /* Thumb height */
+        background: rgb(176, 224, 233);     /* Thumb color */
+        border-radius: 20%;      /* Make it circular */
+        cursor: pointer;         /* Change cursor on hover */
+    }
+    
+    @media (max-width: 768px) {
+            .welcome-title {
+                font-size: 1.5rem;
+            }
+
+            .btn-custom {
+                font-size: 1rem;
+                padding: 10px 15px;
+            }
+
+            .logo img {
+                max-height: 50px;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .welcome-title {
+                font-size: 1.2rem;
+            }
+
+            .btn-custom {
+                font-size: 0.9rem;
+                padding: 8px 12px;
+            }
+
+            .logo img {
+                max-height: 100px;
+            }
+        }
+        </style>
+    <!-- Include Flatpickr CSS for the date picker -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+</head>
+<body>
+    <video class="video-bg" autoplay muted loop>
+        <source src="{% static 'videos/7101912-uhd_2560_1440_25fps.mp4'  %}" type="video/mp4">
+        Your browser does not support the video tag.
+    </video>
+
+    <!-- Logo-->
+    <div class="logo">
+        <img src="{% static 'images/Logo_final (3).png' %}" alt="Wellness Tracker Logo">
+    </div>
+
+    <h1>Post-Session Metrics</h1>
+    <div class="form-container">
+    <form method="post">
+        {% csrf_token %}
+        <!-- {{ post_form.as_p }} -->
+
+        <div class="form-group">
+          <label for="client_name">Client Name:*</label>
+          <select id="client_name" name="client_name">
+            {% for name in client_names %}
+                <option value="{{ name }}">{{ name }}</option>
+            {% endfor %}
+          </select>
+        </div>
+
+         <!-- Coach Name Dropdown -->
+         <div class="form-group">
+            <label for="coach_name">Coach Name: *</label>
+            <select id="coach_name" name="coach_name">
+                {% for name in coach_names %}
+                    <option value="{{ name }}">{{ name }}</option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="date">Select Date: *</label>
+            <input type="date" id="date" name="date">
+        </div>
+
+        <div class="form-group">
+            <label for="rpe">RPE: *</label>
+            <input type="range" id="rpe" name="rpe" min="1" max="10" step="1" value="3" oninput="updateSliderValue('rpe', 'rpeValue')">
+            <span id="rpeValue">3</span>
+        </div>
+
+        <div class="form-group">
+            <label for="pain_scale">Pain Scale: *</label>
+            <input type="range" id="pain_scale" name="pain_scale" min="1" max="5" step="1" value="3" oninput="updateSliderValue('pain_scale', 'painValue')">
+            <span id="painValue">3</span>
+        </div>
+
+        <div class="form-group">
+            <label for="session_duration">Session Duration (minutes): *</label>
+            <input type="number" id="session_duration" name="session_duration" min="1" max="300" step="1" value="30">
+        </div>
+
+        <div class="form-group">
+            <label for="avg_HR">Heart Rate (bpm):</label>
+            <input type="number" id="avg_HR" name="avg_HR" min="1" max="300" step="1" value="30">
+        </div>
+
+        <div class="button-container">
+            <button type="submit">Submit</button>
+        </div>
+
+    </form>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+<script>
+    // Apply Flatpickr to the date input
+    flatpickr("#date", {
+        dateFormat: "Y-m-d",  // You can adjust the format as needed
+    });
+    // Add the slider value update function here
+    function updateSliderValue(sliderId, outputId) {
+        const slider = document.getElementById(sliderId);
+        const output = document.getElementById(outputId);
+        
+        // Update displayed value
+        output.innerText = slider.value;
+        
+        // Calculate percentage for dynamic background
+        const percentage = ((slider.value - slider.min) / (slider.max - slider.min)) * 100;
+
+        // Set gradient background with dynamic color
+        slider.style.background = `linear-gradient(90deg, #FFA300 ${percentage}%, #ccc ${percentage}%)`;
+    }
+
+    // Initialize sliders on page load
+    document.addEventListener("DOMContentLoaded", function() {
+        const sliders = ['sleep', 'soreness', 'mental_stress', 'fatigue', 'pain_scale', 'stiffness'];
+        
+        sliders.forEach(sliderId => {
+            const slider = document.getElementById(sliderId);
+            const outputId = sliderId + 'Value';
+
+            // Initialize each slider's background and value display
+            updateSliderValue(sliderId, outputId);
+
+            // Add event listener for real-time updates
+            slider.addEventListener('input', () => updateSliderValue(sliderId, outputId));
+        });
+    });
+</script>
+</body>
+</html>

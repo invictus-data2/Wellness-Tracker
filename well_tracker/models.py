@@ -27,8 +27,8 @@ class PostSessionMetrics(models.Model):
     date = models.DateField(default=timezone.now)
     rpe = models.IntegerField(validators=[MinValueValidator(1), MaxValueValidator(10)], blank=False, null=False)
     pain_scale = models.IntegerField(validators=[MinValueValidator(1), MaxValueValidator(10)], blank=False, null=False)
-    session_duration = models.IntegerField(validators=[MinValueValidator(1)], help_text="Enter session duration in minutes only.", blank=False, null=False)
-    avg_HR = models.FloatField(default=0)
+    session_duration = models.IntegerField(blank=False, null=False)
+    avg_HR = models.FloatField(blank= True, null= True)
     acwr_rpe = models.FloatField(default=0)
     acwr_HR = models.FloatField(default=0)
     def __str__(self):

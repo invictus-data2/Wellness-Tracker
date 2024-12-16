@@ -1,25 +1,39 @@
+{% load static %}
 <!DOCTYPE html>
 <html>
 <head>
+    <meta charset= "UTF-8">
+    <meta name="viewport" content="width=device-width", initial-scale=1.0>
+
     <title>Post-Session Metrics</title>
     <style>
         body {
-            background-color: rgb(131, 16, 16);
+            background-color: rgb(86, 8, 90);
             color: rgb(255, 255, 255);
+            font-family:'Trebuchet M S', sans-serif;
             margin: 0;
-            /* background-image: url('{{ background_image }}'); 
-            background-size: cover; 
-            background-position: center; 
-            height: 100vh; /* Full height */ 
-            /* margin: 0; */ 
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center; 
+        }
+        .video-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            z-index: -1;
+            filter: blur(10px) brightness(0.5);
         }
         h1 {
             text-align: center;
             font-size: 40px;
             margin-top: 50px;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 2.0); /* Add shadow for better visibility */
+            margin-bottom: 50px;
+            font-family: 'Trebuchet M S', sans-serif;
         }
-
     
         .form-container {
             display: flex;
@@ -28,6 +42,7 @@
             min-height: 90vh;
             margin: 0;
             width: 100%;
+            font-family: 'Trebuchet M S', sans-serif;
         }
     
         form {
@@ -35,19 +50,23 @@
             flex-direction: column;
             font-size: 1.2em;
             width: 100%;  /* Ensure form takes full width inside container */
-            max-width: 500px; /* Optional: limit the width of the form */
+            max-width: 80%; /* Optional: limit the width of the form */
         }
     
         .form-group {
             display: flex;
             align-items: center;
-            margin-bottom: 30px;
+            gap: 10px;
+            margin-bottom: 15px;
         }
     
         .form-group label {
             width: 150px;            /* Fixed label width */
-            text-align: right;
-            margin-right: 20px;      /* Space between label and input */
+            text-align: left;
+            font-family:'Trebuchet M S', sans-serif;
+            /*margin-bottom: 5px;
+            margin-right: 10px;  */
+            font-weight: bold;       /* Space between label and input */
         }
     
         /* Consistent style for all inputs and select boxes */
@@ -59,6 +78,7 @@
             height: 40px;            /* Consistent height for all input fields */
             padding: 8px;
             font-size: 1em;
+            font-family: 'Trebuchet M S', sans-serif;
             border: none;
             background-color: white;
             color: black;
@@ -75,15 +95,17 @@
             display: flex;
             justify-content: center;
             margin-top: 20px;
+            font-family:'Trebuchet M S', sans-serif;
         }
     
         button {
         width: 200px;
         height: 50px;
         font-size: 1.2em;
+        font-family:'Trebuchet M S', sans-serif;
         border: none;
         border-radius: 8px;
-        background-color: gold; /* Change background color to white */
+        background-color: rgba(217, 183, 119); /* Change background color to white */
         color: rgb(1, 1, 1); /* Change text color to blue for contrast */
         cursor: pointer;
         transition: background-color 0.3s, color 0.3s; /* Smooth transition for hover effect */
@@ -100,7 +122,7 @@
         appearance: none;        /* Remove default browser styling */
         height: 10px;            /* Increase slider height */
         border-radius: 5px;      /* Rounded corners */
-        background: #ccc; /* Default gradient */
+        background: linear-gradient(to right, rgb(96, 38, 162), rgb(255, 0, 0)); 
         outline: none;           /* Remove focus outline */
         transition: background 0.3s ease; /* Smooth color transition */
     }
@@ -110,48 +132,81 @@
         -webkit-appearance: none;        /* Remove default thumb */
         width: 20px;             /* Thumb width */
         height: 20px;            /* Thumb height */
-        background: rgb(1, 1, 1);     /* Thumb color */
-        border-radius: 50%;      /* Make it circular */
+        background: rgb(176, 224, 233);     /* Thumb color */
+        border-radius: 20%;     /* Make it circular */
         cursor: pointer;         /* Change cursor on hover */
     }
 
-        </style>
+    @media (max-width: 768px) {
+        .welcome-title{
+            font-size: 1.5rem;
+        }
+        .btn-custom{
+            font-size: 1rem;
+            padding: 10px 15px;
+        }
+        .logo img{
+            max-height: 50px;
+        }
+    }
+
+    @media (max-width: 576px){
+        .welcome-title{
+            font-size: 1.2rem;
+        }
+        .btn-custom{
+            font-size: 0.9rem;
+            padding: 8px 12px;
+        }
+        .logo img{
+            max-height: 100px;
+        }
+    }
+    </style>
     <!-- Include Flatpickr CSS for the date picker -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
 </head>
 <body>
+    <video class="video-bg" autoplay muted loop>
+        <source src="{% static 'videos\7101912-uhd_2560_1440_25fps.mp4' %}" type="video/mp4">
+        Your browser does not support the video tag.
+    </video>
     <h1>Post-Session Metrics</h1>
     <div class="form-container">
     <form method="post">
         {% csrf_token %}
         <!-- {{ post_form.as_p }} -->
 
+            <!-- Client Name Dropdown -->
+            <div class="form-group">
+                <label for="client_name">Client Name:<span style="color: red;">*</span></label>
+                <select id="client_name" name="client_name" required> 
+                    <option value="" disabled selected>Pick Your Name</option>               
+                    {% for name in client_names %}
+                         <option value="{{ name }}">{{ name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            
+            <!-- Coach Name Dropdown -->
+            <div class="form-group">
+                <label for="coach_name">Coach Name:<span style="color: red;">*</span></label>
+                <select id="coach_name" name="coach_name" required>
+                    <option value="" disabled selected>Select Your Coach</option>
+                    {% for name in coach_names %}
+                         <option value="{{ name }}">{{ name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+        <!-- Date Picker -->
         <div class="form-group">
-          <label for="client_name">Client Name: <span style="color: white;">*</span></label>
-          <select id="client_name" name="client_name">
-            {% for name in client_names %}
-                <option value="{{ name }}">{{ name }}</option>
-            {% endfor %}
-          </select>
+            <label for="date">Select Date:<span style="color: red;">*</span></label>
+            <input type="date" id="date" name="date" placeholder="Pick Today's Date" required>
         </div>
 
-         <!-- Coach Name Dropdown -->
-         <div class="form-group">
-            <label for="coach_name">Coach Name: <span style="color: white;">*</span></label>
-            <select id="coach_name" name="coach_name">
-                {% for name in coach_names %}
-                    <option value="{{ name }}">{{ name }}</option>
-                {% endfor %}
-            </select>
-        </div>
-
         <div class="form-group">
-            <label for="date">Select Date: <span style="color: white;">*</span></label>
-            <input type="date" id="date" name="date">
-        </div>
-
-        <div class="form-group">
-            <label for="rpe">RPE: <span style="color: white;">*</span></label>
+            <label for="rpe">RPE: <span style="color: red;">*</span></label>
             <input type="range" id="rpe" name="rpe" min="1" max="10" step="1" value="3" oninput="updateSliderValue('rpe', 'rpeValue')">
             <span id="rpeValue">3</span>
         </div>
@@ -160,16 +215,16 @@
             <label for="pain_scale">Pain Scale:</label>
             <input type="range" id="pain_scale" name="pain_scale" min="1" max="5" step="1" value="3" oninput="updateSliderValue('pain_scale', 'painValue')">
             <span id="painValue">3</span>
-        </div>
+        </div>        
 
         <div class="form-group">
-            <label for="session_duration">Session Duration (minutes): <span style="color: white;">*</span></label>
-            <input type="number" id="session_duration" name="session_duration" min="1" max="300" step="1" value="30">
+            <label for="session_duration">Session Duration (minutes): <span style="color: red;">*</span></label>
+            <input type="number" id="session_duration" name="session_duration" min="1" max="300" step="1" placeholder="Kindly Specify the Duration of the Session">
         </div>
 
         <div class="form-group">
             <label for="avg_HR">Heart Rate (bpm):</label>
-            <input type="number" id="avg_HR" name="avg_HR" min="1" max="300" step="1" value="30">
+            <input type="number" id="avg_HR" name="avg_HR" step="1" min="0" placeholder="Please Specify the Average Heart Rate">
         </div>
 
         <div class="button-container">
@@ -185,6 +240,7 @@
     flatpickr("#date", {
         dateFormat: "Y-m-d",  // You can adjust the format as needed
     });
+        
     // Add the slider value update function here
     function updateSliderValue(sliderId, outputId) {
         const slider = document.getElementById(sliderId);
@@ -197,24 +253,38 @@
         const percentage = ((slider.value - slider.min) / (slider.max - slider.min)) * 100;
 
         // Set gradient background with dynamic color
-        slider.style.background = `linear-gradient(90deg, #FFA300 ${percentage}%, #ccc ${percentage}%)`;
+        slider.style.background = `linear-gradient(to right, rgb(96, 38, 162) ${percentage}%, rgb(255, 0, 0) ${percentage}%)`;
+
+        //slider.style.background = `linear-gradient(to right, rgb(96, 38, 162) ${percentage}% , rgb(255, 0, 0) ${percentage}%)`; 
+        //slider.style.background = `linear-gradient(to right, rgb(96, 38, 162) 0%, rgb(255, 0, 0) ${percentage}%, #ccc ${percentage}%)`;
     }
-
-    // Initialize sliders on page load
+        // Initialize sliders on page load
     document.addEventListener("DOMContentLoaded", function() {
-        const sliders = ['sleep', 'soreness', 'mental_stress', 'fatigue', 'pain_scale', 'stiffness'];
+       const sliders = document.querySelectorAll("input[type='range']");
         
-        sliders.forEach(sliderId => {
-            const slider = document.getElementById(sliderId);
-            const outputId = sliderId + 'Value';
-
-            // Initialize each slider's background and value display
-            updateSliderValue(sliderId, outputId);
-
-            // Add event listener for real-time updates
-            slider.addEventListener('input', () => updateSliderValue(sliderId, outputId));
+                sliders.forEach(slider => {
+                    updateSliderWithValue(slider);
+                    slider.addEventListener('input', () => updateSliderWithValue(slider));
         });
-    });
-</script>
+    })
+    /*function updateSliderWithValue(slider) {
+                const valueDisplay = slider.nextElementSibling;
+                const percentage = ((slider.value - slider.min) / (slider.max - slider.min)) * 100;
+        
+                // Update value text and position it dynamically near the thumb
+                valueDisplay.textContent = slider.value;
+                valueDisplay.style.left = `calc(${percentage}% - 10px)`; 
+            }
+    
+    document.addEventListener("DOMContentLoaded", function () {
+                const sliders = document.querySelectorAll("input[type='range']");
+        
+                sliders.forEach(slider => {
+                    updateSliderWithValue(slider);
+                    slider.addEventListener('input', () => updateSliderWithValue(slider));
+                });
+            });*/
+    
+            </script>
 </body>
 </html>
