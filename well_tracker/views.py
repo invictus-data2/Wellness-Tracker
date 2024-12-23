@@ -7,6 +7,7 @@ import pywhatkit as kit
 import matplotlib.pyplot as plt
 import os
 from .utils import get_client_names, get_coach_names
+from threading import Thread
 
 import gspread
 from oauth2client.service_account import ServiceAccountCredentials
@@ -87,12 +88,12 @@ def pre_session_view(request):
 
             # Calculate the composite score
             composite_score = (
-                (w_sleep * sleep) +
-                (w_sore * (5 - soreness)) +
-                (w_stress * (5 - mental_stress)) +
-                (w_fatigue * (5 - fatigue)) +
-                (w_pain * (5 - pain_scale)) +
-                (w_stiffness * (5 - stiffness))
+                (w_sleep * (sleep*2)) +
+                (w_sore * (10 - (soreness*2))) +
+                (w_stress * (10 - (mental_stress*2))) +
+                (w_fatigue * (10 - (fatigue*2))) +
+                (w_pain * (10 - (pain_scale*2))) +
+                (w_stiffness * (10 - (stiffness*2)))
             ) * 10
 
             # Create and save the model instance
@@ -170,7 +171,7 @@ def pre_session_view(request):
                 f"{pain_scale_metric}\n"     
                 f"{stiffness_metric}\n"
                 f"{grip_strength_metric}\n\n"
-                f"📈 *Wellness Score*: {composite_score*2:.2f}%\n\n"
+                f"📈 *Wellness Score*: {composite_score:.2f}%\n\n"
                 f"🔔 *Review these metrics before the session and adjust training accordingly.*\n\n"
                 f"*Invictus Performance Lab*"
             )
@@ -178,15 +179,19 @@ def pre_session_view(request):
             # Get the coach's phone number
             coach_number = get_coach_number(coach_name)
 
-            # Schedule message to send immediately or with a slight delay
-            now = datetime.now()
-            hours, minutes = now.hour, now.minute + 2  # Schedule 2 minutes from now
-            if minutes >= 60:
-                minutes -= 60
-                hours += 1  # Send 1 minute from now to ensure time sync
+            # # Schedule message to send immediately or with a slight delay
+            # now = datetime.now()
+            # hours, minutes = now.hour, now.minute + 2  # Schedule 2 minutes from now
+            # if minutes >= 60:
+            #     minutes -= 60
+            #     hours += 1  # Send 1 minute from now to ensure time sync
 
-            # Send the WhatsApp message using pywhatkit
-            kit.sendwhatmsg(coach_number, message, hours, minutes)
+            # # Send the WhatsApp message using pywhatkit
+            # kit.sendwhatmsg(coach_number, message, hours, minutes)
+
+            # Send the WhatsApp message in a background thread
+            thread = Thread(target=send_whatsapp_message, args=(coach_number, message))
+            thread.start()
 
             formatted_score = f"{composite_score:.2f}"
 
@@ -241,10 +246,16 @@ def append_to_google_sheets(sheet, data):
         print(f"Error appending data to Google Sheet: {e}")
         raise e  # Let the caller handle this exception
 
-# Views
+def send_whatsapp_message(coach_number, message):
+    """Function to send a WhatsApp message."""
+    now = datetime.now()
+    hours, minutes = now.hour, now.minute + 1  # Schedule 2 minutes from now
+    if minutes >= 60:
+        minutes -= 60
+        hours += 1  # Adjust the hour if minutes exceed 60
+    kit.sendwhatmsg(coach_number, message, hours, minutes)
+
 def post_session_view(request):
-    print("Entering post_session_metrics view.")
-    """Handle the post-session view."""
     client_names = get_client_names()
     coach_names = get_coach_names()
 
@@ -309,17 +320,14 @@ def post_session_view(request):
             ]
             sheet1.append_row(data)
 
-            # Handle None cases for pain_scale and avg_HR in the message
+            # Prepare the WhatsApp message
             pain_scale_message = f"*Pain Scale*: {pain_scale}" if pain_scale is not None else "*Pain Scale*: No Pain"
             avg_HR_message = f"*Average HR*: {avg_HR}" if avg_HR is not None else "*Average HR*: Not filled by client."
-            # Handle ACWR (HR) with explicit message when avg_HR is None
-            if avg_HR is None:
-                acwr_hr_message = "*ACWR (HR)*: Avg_HR is not filled by client."
-            else:
-                acwr_hr_message = f"*ACWR (HR)*: {acwr_hr:.2f}"
-
-
-            # Compose the WhatsApp message with the additional metrics
+            acwr_hr_message = (
+                "*ACWR (HR)*: Avg_HR is not filled by client."
+                if avg_HR is None
+                else f"*ACWR (HR)*: {acwr_hr:.2f}"
+            )
             message = (
                 f"🏋️‍♂️ *Post-Session Report* 🏋️‍♂️\n\n"
                 f"     *Dear* {coach_name},\n\n"
@@ -331,27 +339,18 @@ def post_session_view(request):
                 f"⚖️ {avg_HR_message}\n"
                 f"⚖️ *ACWR (RPE)*: {acwr_rpe:.2f}\n"
                 f"❤️ {acwr_hr_message}\n\n"
-                f"📈 *Training Suggestions*: Maintain a balance between acute and chronic load to optimize performance and prevent injury.\n\n"
+                f"📈 *NOTE*: Due to insufficient data, the ACWR value might be inaccurate.\n\n"
                 f"🔔 *Keep tracking metrics to ensure steady progress.*\n\n"
                 f"🧬 *Invictus Performance Lab*"
             )
-
-            # Get the coach's phone number
             coach_number = get_coach_number(coach_name)
 
-            # Schedule message to send immediately or with a slight delay
-            now = datetime.now()
-            hours, minutes = now.hour, now.minute + 2  # Schedule 2 minutes from now
-            if minutes >= 60:
-                minutes -= 60
-                hours += 1  # Send 1 minute from now to ensure time sync
-
-            # Send the WhatsApp message using pywhatkit
-            kit.sendwhatmsg(coach_number, message, hours, minutes)
+            # Send the WhatsApp message in a background thread
+            thread = Thread(target=send_whatsapp_message, args=(coach_number, message))
+            thread.start()
 
             return redirect('success_post')
 
-    # If the request method is GET, render the empty form
     else:
         form = PostForm()
     return render(
@@ -359,6 +358,124 @@ def post_session_view(request):
         'post_session.html',
         {'post_form': form, 'client_names': client_names, 'coach_names': coach_names}
     )
+# Views
+# def post_session_view(request):
+#     print("Entering post_session_metrics view.")
+#     """Handle the post-session view."""
+#     client_names = get_client_names()
+#     coach_names = get_coach_names()
+
+#     if request.method == 'POST':
+#         form = PostForm(request.POST)
+#         if form.is_valid():
+#             client_name = form.cleaned_data['client_name']
+#             coach_name = form.cleaned_data['coach_name']
+#             date = form.cleaned_data['date']
+#             rpe = form.cleaned_data['rpe']
+#             pain_scale = form.cleaned_data['pain_scale']
+#             session_duration = form.cleaned_data['session_duration']
+#             avg_HR = form.cleaned_data.get('avg_HR')  # Using get() to handle None
+
+#             # Session load calculations
+#             session_load_rpe = rpe * session_duration
+
+#             # Only calculate session_load_hr if avg_HR is provided
+#             if avg_HR is not None:
+#                 session_load_hr = avg_HR * session_duration
+#             else:
+#                 session_load_hr = None  # Or set it to 0 or another default value if needed
+
+#             # Retrieve last ACWR values
+#             last_acwr_rpe = get_last_acwr_value(client_name, 'ACWR RPE', sheet1)
+#             last_acwr_hr = get_last_acwr_value(client_name, 'ACWR HR', sheet1)
+
+#             # Define alpha values for EWMA
+#             alpha_acute = 2 / (3 + 1)
+#             alpha_chronic = 2 / (12 + 1)
+
+#             # Calculate loads and ACWR for RPE
+#             acute_load_rpe = calculate_ewma(session_load_rpe, last_acwr_rpe, alpha_acute)
+#             chronic_load_rpe = calculate_ewma(session_load_rpe, last_acwr_rpe, alpha_chronic)
+#             acwr_rpe = round(calculate_acwr(acute_load_rpe, chronic_load_rpe), 2)
+
+#             # Calculate loads and ACWR for HR (only if session_load_hr is not None)
+#             if session_load_hr is not None:
+#                 acute_load_hr = calculate_ewma(session_load_hr, last_acwr_hr, alpha_acute)
+#                 chronic_load_hr = calculate_ewma(session_load_hr, last_acwr_hr, alpha_chronic)
+#                 acwr_hr = round(calculate_acwr(acute_load_hr, chronic_load_hr), 2)
+#             else:
+#                 acwr_hr = 0  
+
+#             # Create and save the model instance
+#             post_session_metrics = form.save(commit=False)
+#             post_session_metrics.acwr_rpe = acwr_rpe
+#             post_session_metrics.acwr_hr = acwr_hr
+#             post_session_metrics.save()  # Save to the database
+
+#             # Prepare data for Google Sheets
+#             data = [
+#                 client_name,
+#                 coach_name,
+#                 date.strftime('%Y-%m-%d'),
+#                 rpe,
+#                 pain_scale,
+#                 session_duration,
+#                 avg_HR if avg_HR is not None else 'N/A',  # Handle None case for avg_HR
+#                 acwr_rpe,
+#                 acwr_hr if acwr_hr is not None else 'N/A',  # Handle None case for acwr_hr
+#             ]
+#             sheet1.append_row(data)
+
+#             # Handle None cases for pain_scale and avg_HR in the message
+#             pain_scale_message = f"*Pain Scale*: {pain_scale}" if pain_scale is not None else "*Pain Scale*: No Pain"
+#             avg_HR_message = f"*Average HR*: {avg_HR}" if avg_HR is not None else "*Average HR*: Not filled by client."
+#             # Handle ACWR (HR) with explicit message when avg_HR is None
+#             if avg_HR is None:
+#                 acwr_hr_message = "*ACWR (HR)*: Avg_HR is not filled by client."
+#             else:
+#                 acwr_hr_message = f"*ACWR (HR)*: {acwr_hr:.2f}"
+
+
+#             # Compose the WhatsApp message with the additional metrics
+#             message = (
+#                 f"🏋️‍♂️ *Post-Session Report* 🏋️‍♂️\n\n"
+#                 f"     *Dear* {coach_name},\n\n"
+#                 f"👤 *Client*: *{client_name}*\n"
+#                 f"🗓️ *Date*: {date.strftime('%Y-%m-%d')}\n"
+#                 f"⚖️ *RPE*: {rpe}\n"
+#                 f"⚖️ *Session Duration*: {session_duration} minutes\n"
+#                 f"⚖️ {pain_scale_message}\n"
+#                 f"⚖️ {avg_HR_message}\n"
+#                 f"⚖️ *ACWR (RPE)*: {acwr_rpe:.2f}\n"
+#                 f"❤️ {acwr_hr_message}\n\n"
+#                 f"📈 *NOTE*: As we don't have enough data the ACWR value might be inaccurate.\n\n"
+#                 f"🔔 *Keep tracking metrics to ensure steady progress.*\n\n"
+#                 f"🧬 *Invictus Performance Lab*"
+#             )
+
+#             # Get the coach's phone number
+#             coach_number = get_coach_number(coach_name)
+
+#             # Schedule message to send immediately or with a slight delay
+#             now = datetime.now()
+#             hours, minutes = now.hour, now.minute + 2  # Schedule 2 minutes from now
+#             if minutes >= 60:
+#                 minutes -= 60
+#                 hours += 1  # Send 1 minute from now to ensure time sync
+
+#             # Send the WhatsApp message using pywhatkit
+#             kit.sendwhatmsg(coach_number, message, hours, minutes)
+
+#             return redirect('success_post')
+
+#     # If the request method is GET, render the empty form
+#     else:
+#         form = PostForm()
+#     return render(
+#         request,
+#         'post_session.html',
+#         {'post_form': form, 'client_names': client_names, 'coach_names': coach_names}
+#     )
 
 
 # Set-ExecutionPolicy Unrestricted -Scope CurrentUser

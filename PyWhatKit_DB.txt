@@ -268,3 +268,38 @@ Time: 17:39
 Phone Number: +917319419671
 Message: 🏋️‍♂️ *Post-Session Report* 🏋️‍♂️ *Dear* Cheeradeep,👤 *Client*: *client4*🗓️ *Date*: 2024-12-16⚖️ *RPE*: 8⚖️ *Session Duration*: 60 minutes⚖️ *Pain Scale*: 2⚖️ *Average HR*: Not filled by client.⚖️ *ACWR (RPE)*: 3.25❤️ *ACWR (HR)*: Avg_HR is not filled by client.📈 *Training Suggestions*: Maintain a balance between acute and chronic load to optimize performance and prevent injury.🔔 *Keep tracking metrics to ensure steady progress.*🧬 *Invictus Performance Lab*
 --------------------
+Date: 18/12/2024
+Time: 16:58
+Phone Number: +917319419671
+Message: 🏋️‍♂️ *Post-Session Report* 🏋️‍♂️ *Dear* Cheeradeep,👤 *Client*: *client2*🗓️ *Date*: 2024-12-18⚖️ *RPE*: 8⚖️ *Session Duration*: 60 minutes⚖️ *Pain Scale*: 2⚖️ *Average HR*: Not filled by client.⚖️ *ACWR (RPE)*: 3.16❤️ *ACWR (HR)*: Avg_HR is not filled by client.📈 *Training Suggestions*: Maintain a balance between acute and chronic load to optimize performance and prevent injury.🔔 *Keep tracking metrics to ensure steady progress.*🧬 *Invictus Performance Lab*
+--------------------
+Date: 18/12/2024
+Time: 17:11
+Phone Number: +917319419671
+Message: 🏋️‍♂️ *Post-Session Report* 🏋️‍♂️ *Dear* Cheeradeep,👤 *Client*: *client2*🗓️ *Date*: 2024-12-18⚖️ *RPE*: 7⚖️ *Session Duration*: 60 minutes⚖️ *Pain Scale*: 2⚖️ *Average HR*: Not filled by client.⚖️ *ACWR (RPE)*: 3.14❤️ *ACWR (HR)*: Avg_HR is not filled by client.📈 *NOTE*: As we don't have enough data the ACWR value might be inaccurate.🔔 *Keep tracking metrics to ensure steady progress.*🧬 *Invictus Performance Lab*
+--------------------
+Date: 18/12/2024
+Time: 17:21
+Phone Number: +917319419671
+Message: 🏋️‍♂️ *Pre-Session Report* 🏋️‍♂️ *Dear* Cheeradeep,👤 *Client*: *client3*🗓️ *Date*: 2024-12-18⚖️ *Weight (in kg)*: Not filled by client.📊 *Metrics*:*Sleep*: *3/5* ⚠️*Soreness*: *3/5* ⚠️*Mental Stress*: *3/5* ⚠️*Fatigue*: *3/5* ⚠️*Pain Scale*: *3/5* ⚠️*Stiffness*: *3/5* ⚠️*Grip Strength (in kg)*: Not filled by client.📈 *Wellness Score*: 47.00%🔔 *Review these metrics before the session and adjust training accordingly.**Invictus Performance Lab*
+--------------------
+Date: 18/12/2024
+Time: 17:25
+Phone Number: +917319419671
+Message: 🏋️‍♂️ *Pre-Session Report* 🏋️‍♂️ *Dear* Cheeradeep,👤 *Client*: *client2*🗓️ *Date*: 2024-12-18⚖️ *Weight (in kg)*: Not filled by client.📊 *Metrics*:*Sleep*: *2/5* ⚠️Soreness: 2/5Mental Stress: 2/5Fatigue: 2/5*Pain Scale*: *4/5* ⚠️Stiffness: 2/5*Grip Strength (in kg)*: Not filled by client.📈 *Wellness Score*: 39.00%🔔 *Review these metrics before the session and adjust training accordingly.**Invictus Performance Lab*
+--------------------
+Date: 18/12/2024
+Time: 17:32
+Phone Number: +917319419671
+Message: 🏋️‍♂️ *Pre-Session Report* 🏋️‍♂️ *Dear* Cheeradeep,👤 *Client*: *client3*🗓️ *Date*: 2024-12-18⚖️ *Weight (in kg)*: Not filled by client.📊 *Metrics*:*Sleep*: *2/5* ⚠️Soreness: 2/5Mental Stress: 2/5Fatigue: 2/5*Pain Scale*: *4/5* ⚠️Stiffness: 2/5*Grip Strength (in kg)*: Not filled by client.📈 *Wellness Score*: 39.00%🔔 *Review these metrics before the session and adjust training accordingly.**Invictus Performance Lab*
+--------------------
+Date: 18/12/2024
+Time: 17:34
+Phone Number: +917319419671
+Message: 🏋️‍♂️ *Post-Session Report* 🏋️‍♂️ *Dear* Cheeradeep,👤 *Client*: *client3*🗓️ *Date*: 2024-12-18⚖️ *RPE*: 9⚖️ *Session Duration*: 60 minutes⚖️ *Pain Scale*: 1⚖️ *Average HR*: Not filled by client.⚖️ *ACWR (RPE)*: 3.17❤️ *ACWR (HR)*: Avg_HR is not filled by client.📈 *NOTE*: Despite of not having enough data the ACWR value might be inaccurate.🔔 *Keep tracking metrics to ensure steady progress.*🧬 *Invictus Performance Lab*
+--------------------
+Date: 18/12/2024
+Time: 19:6
+Phone Number: +917319419671
+Message: 🏋️‍♂️ *Post-Session Report* 🏋️‍♂️ *Dear* Cheeradeep,👤 *Client*: *client3*🗓️ *Date*: 2024-12-17⚖️ *RPE*: 10⚖️ *Session Duration*: 80 minutes⚖️ *Pain Scale*: 3⚖️ *Average HR*: 180.0⚖️ *ACWR (RPE)*: 3.19❤️ *ACWR (HR)*: 3.25📈 *NOTE*: Due to insufficient data, the ACWR value might be inaccurate.🔔 *Keep tracking metrics to ensure steady progress.*🧬 *Invictus Performance Lab*
+--------------------
