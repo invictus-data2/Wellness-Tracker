@@ -22,7 +22,9 @@ import os
 
 STATIC_URL = '/static/'
 STATIC_ROOT = '/home/InvictusPerformanceLab/wellness/staticfiles'
-STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
+STATICFILES_DIRS = [
+    BASE_DIR / "static",  # Ensures it refers to the static directory in the project folder
+]
 
 
 
@@ -33,7 +35,7 @@ STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
 SECRET_KEY = "django-insecure-p3w$+k*r(6)1&^5w2$&#j0mqy!kr-%6kc194m3e-2-8dzsr$x-"
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = ["*"]
 
