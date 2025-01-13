@@ -3,7 +3,6 @@ from .forms import PreForm, PostForm
 from .models import PreSessionMetrics, PostSessionMetrics
 from datetime import datetime
 from django.templatetags.static import static
-import pywhatkit as kit
 import matplotlib.pyplot as plt
 import os
 from .utils import get_client_names, get_coach_names
@@ -20,10 +19,7 @@ scope = [  'https://www.googleapis.com/auth/spreadsheets',
     'https://www.googleapis.com/auth/drive']
 
 j_son = os.getenv("GOOGLE_APPLICATION_CREDENTIALS_XYZ")
-print(j_son)
-credentials = ServiceAccountCredentials.from_json_keyfile_name(
-    j_son, scope)
-
+credentials = ServiceAccountCredentials.from_json_keyfile_name(j_son, scope)
 client = gspread.authorize(credentials)
 
 sheet = client.open("Wellness").worksheet("pre_Session")
